@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-public class Main {
+public class Program {
 
 
     public static void main(String[] args) {
@@ -56,7 +56,7 @@ public class Main {
     		c[i] = 1;
     	} else if (dictionary.contains("" + text.charAt(i))) {
     		
-    		if(c[i - 1] > 0) {
+    		if(c[i - 1] > 0) { // add prev. substring split count + 1 (from this existing word)
     			c[i] = c[i - 1] + 1;
     			
     			if(i < c.length) {
@@ -67,7 +67,7 @@ public class Main {
     		
     	}
     	
-    	if( (i-1 >= 0) && c[i-1] == 1) {
+    	if( (i-1 >= 0) && c[i-1] == 1) { // letter here may not be a valid word or concatenation
     		words.add(text.substring(0, i));
     		return 1 + findSplits(Arrays.copyOfRange(c, i, c.length), text.substring(i, c.length), dictionary, words, 0);
     	} else {
