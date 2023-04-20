@@ -40,40 +40,38 @@ public class Program {
     }
 
 
-    public static int findSplits(int[] c, String text, Set<String> dictionary, Set<String> words, int i) {
+    public static String findSplits(String text, Set<String> dictionary, Map<String, String> words) {
     	
-    	if(c.length <= 0 || i >= c.length)
-    		return 0;
+    	if(words.keySet().contains(text))
+    		return words.get(text); // with the text passed
     	
-    	if(i == c.length - 1 && dictionary.contains(text.substring(0, i) + "" + text.charAt(i))) { // i - 1 implied in substring method docs
-    		words.add(text);
-    		return 1;
-    	}
+    	if(dictionary.contains(text))
+    		return text;
     	
-    	System.out.println("len/i " + c.length + "-" + i + "   " + text.charAt(i)); // debug
-
-    	if(dictionary.contains(text.substring(0, i) + "" + text.charAt(i))) {
-    		c[i] = 1;
-    	} else if (dictionary.contains("" + text.charAt(i))) {
+    	String result = null;
+    	for(int i = 0; i < text.length(); i++) {
     		
-    		if(c[i - 1] > 0) { // add prev. substring split count + 1 (from this existing word)
-    			c[i] = c[i - 1] + 1;
+    		String pfx = text.substring(0, i+1);
+				
+    		if(dictionary.contains(pfx)) {   			
     			
-    			if(i < c.length) {
-    				return findSplits(c, text, dictionary, words, ++i);
-    			}
-    			
+    			String sfxRes = null;
+    			sfxRes = findSplits(text.substring(i+1, text.length()), dictionary, words);
+      			
+      			
+      			if(sfxRes != null) {
+      				
+      				String splitRes = pfx + " " + sfxRes;
+      				
+      				if(result == null || splitRes.split(" ").length < result.split(" ").length) {
+      					result = splitRes;
+      				}
+      			}
     		}
-    		
     	}
+		words.put(text, result);
+		return result;
     	
-    	if( (i-1 >= 0) && c[i-1] == 1) { // letter here may not be a valid word or concatenation
-    		words.add(text.substring(0, i));
-    		return 1 + findSplits(Arrays.copyOfRange(c, i, c.length), text.substring(i, c.length), dictionary, words, 0);
-    	} else {
-    		return findSplits(c, text, dictionary, words, ++i);
-    	}
-
     }
 
 
